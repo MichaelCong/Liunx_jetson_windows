@@ -1,0 +1,56 @@
+https://blog.csdn.net/qq_19707521/article/details/107229401
+dian ge guanzhu dian ge zan,xie de xiangxi dian   
+
+sudo apt-get update
+sudo apt-get full-upgrade             
+sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran   
+sudo apt-get install python3-pip
+
+
+设置虚拟环境
+首先，安装 虚拟环境 打包并创建一个新的Python 3虚拟环境：
+
+$ sudo apt-get install virtualenv
+$ python3 -m virtualenv -p python3 <chosen_venv_name>
+
+激活虚拟环境
+接下来，激活虚拟环境：
+$ source <chosen_venv_name>/bin/activate 
+
+
+1  sudo apt-get install llvm-9 llvm-9-dev llvm-9-doc
+   export LLVM_CONFIG=/usr/bin/llvm-config-9
+  
+
+2  pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py wheel astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta setuptools testresources pip testresources        
+
+3  pip3 install llvmlite==0.33.0
+
+
+5  pip3 install numba==0.50.1                        
+
+
+6   pip3 install librosa==0.8.0
+
+yanzheng zhongduan python3(import llvmlite>import numba>import librosa)
+
+$ deactivate  (停用huan jing)
+ 
+python3 -m virtualenv -p python3 <chosen_venv_name>      jianli huanjing
+source <chosen_venv_name>/bin/activate                   jihuo huanjing
+deactivate                                               tingyong huanjing
+
+
+licheng https://www.cnblogs.com/LXP-Never/p/11561355.html       (pip3 install -U matplotlib)
+
+  bao cuo wu  wenti chuzai "matplotlib"de hua, zhe yang jie jue "sudo apt-get install tcl-dev tk-dev python-tk python3-tk",hai you jiushi "matplotlib" de ban ben taigao. bu ying xiang shiyong jiu buyao huan 
+
+
+banben huancheng zheyang ye xing :
+  llvm   >   llvmlite   >  numpy  >  munba     > librosa
+   8          0.30.0                 0.42.0       0.8.0
+
+
+
+
+

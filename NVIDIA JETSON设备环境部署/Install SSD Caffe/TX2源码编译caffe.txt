@@ -1,0 +1,76 @@
+参考链接：https://blog.csdn.net/u012361289/article/details/98044499
+安装过程还有些报错，尚未解决。
+1. 首先安装各种依赖：（注：一些python库，skimage,protobuf,numpy,scipy都要装python3版本的，不然后面import的时候还是找不到）
+# general dependency
+sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler
+sudo apt-get install --no-install-recommends libboost-all-dev
+# BLAS dependency
+sudo apt-get install libatlas-base-dev
+# python dependency
+sudo apt-get install python (optional)
+sudo apt-get install python-dev 
+# python dependency etc.
+sudo apt-get install ipython (optional)
+sudo apt-get install ipython-notebook (optional)
+sudo apt-get install python3-sklearn  or  sudo pip3 install sklearn
+sudo apt-get install python3-skimage     or   sudo pip3 install skimage
+sudo pip3 install scikit-image(可以先不装，很慢，如果后面import caffe报错再回来装)
+sudo pip3 install numpy
+sudo pip3 install protobuf
+# google dependency
+sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+sudo apt-get install libgflag-dev
+sudo apt-get install -y libopencv-dev (optional)
+
+2. 开始下载安装编译
+git clone https://github.com/BVLC/caffe
+cd caffe #打开到刚刚git下来的caffe
+cp Makefile.config.example Makefile.config
+#将Makefile.config.example的内容复制到Makefile.config
+#因为make指令只能make Makefile.config文件，而Makefile.config.example是caffe给出的makefile例子
+ gedit Makefile.config //打开Makefile.config文件
+ #仔细阅读makefile中的注释语句其实就知道该怎么操作了
+#若使用cudnn，则将# USE_CUDNN := 1
+#修改成：
+USE_CUDNN := 1
+#若使用的opencv版本是3的，则将# OPENCV_VERSION := 3
+修改为：
+OPENCV_VERSION := 3
+#重要的一项
+#将 Whatever else you find you need goes here.下面的
+INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include
+LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib
+#修改为：
+INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial
+LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/aarch64-linux-gnu /usr/lib/aarch64-linux-gnu/hdf5/serial
+#这是因为ubuntu16.04的文件包含位置发生了变化，尤其是需要用到的hdf5的位置，所以需要更改
+ 
+为hdf5创建链接，首先执行下面两句话：
+find . -type f -exec sed -i -e 's^"hdf5.h"^"hdf5/serial/hdf5.h"^g' -e 's^"hdf5_hl.h"^"hdf5/serial/hdf5_hl.h"^g' '{}' \;
+ cd /usr/lib/aarch64-linux-gnu
+这里笔者被坑了很多次，网上几乎所有的教程都是x86_64,给出的是cd /usr/lib/x86_64-linux-gnu，然而TX2并没有这个文件，浪费了笔者很多时间；
+笔者没有找到用aarch架构的caffe安装文章，故写下了此博客
+然后根据情况执行下面两句：
+sudo ln -s libhdf5_serial.so.10.1.0 libhdf5.so
+ sudo ln -s libhdf5_serial_hl.so.10.0.2 libhdf5_hl.so
+注意：这里的10.1.0和10.0.2根据不同的系统可能对应的数字会不同，比如在ubuntu15.10中其数字就是8.0.2.
+具体的数字可以在打开的文件中查看对应文件后面跟的数字
+PS：查看当前目录下文件，用ls -a
+
+D. Make各种文件
+cd .. #此时位置应该处于caffe文件夹下
+make all -j4 
+j4代表计算机cpu有4个核，因此可以多线程一起make，这样make的速度会快很多。TX2是4核的，我们就不要学别人用什么j8，j16了，乖乖地敲j4
+make test -j4
+make runtest -j4
+make pycaffe #如果以后用python来开发的话必须执行这一句，一般不管你是否用python，都会执行这一句
+make distribute
+
+编译完成后，添加pathonpath
+sudo vim ~/.bsahrc
+ export PYTHONPATH=~/caffe/python:$PYTHONPATH
+ source ~/.bashrc
+验证caffe是否安装好
+python3
+ import caffe
+ 

@@ -1,0 +1,26 @@
+# @文件  : Ubuntu18.04安装ssh服务.txt
+# @作者  : Michael Cong
+# @日期  : 2020/08/04
+# @邮箱  : rencong_jx@163.com
+# @参考链接：https://www.cnblogs.com/tansuoxinweilai/p/11617797.html
+
+一、安装openssh-service
+    命令: sudo apt install openssh-server
+
+二、启动ssh服务
+    命令： sudo service ssh start
+    检查是否启动成功： ps -aux | grep ssh
+    如果出现标黄部分的sshd 就说明启动成功
+
+三、下载openssh-client
+    命令： sudo apt install openssh-client
+
+四、使用xshell/mobaxterm进行远程登录
+    查看服务器ip
+    ifconfig
+    （1）xshell：命令：ssh user@ip
+    user: ubuntu用户名
+    ip：通过ifconfig获取的ip地址
+    主机就是服务器内网ip，端口22为默认的端口也可以通过配置进行修改 
+    用户名和密码为ubuntu的用户名和密码
+    （2）mobaxterm强烈建议使用 

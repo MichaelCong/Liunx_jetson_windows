@@ -1,0 +1,107 @@
+# @文件  : Ubuntu18.04安装ssh服务.txt
+# @作者  : Michael Cong
+# @日期  : 2020/08/04
+# @邮箱  : rencong_jx@163.com
+
+一、docker安装
+苦恼！当自己部署好了一台深度学习服务器，由于自己失误或者其他人误操作导致环境发生更改，此时不同用户之间所需环境不一致将导致冲突，为此寻求一种独立的环境变量，用户之间独立操作。因此，寻找了一种docker环境，感觉挺好用的，目前在自己电脑上已成功部署。docker安装参考如下教程。
+ubuntu18.04安装nvidia-docker教程：
+获取gpg密钥并添加密钥
+1、curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+# 定义变量distribution，等于变量$(...)，值为 ubuntu18.04
+2、distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+# 获取ubuntu18.04版本的nvidia-docker列表，结果返回给标准输出
+# tee命令读取标准输入的数据（即上一条curl命令的输出），并将内容输出成文件，并且在屏幕上显示
+3、curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu18.04/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+# 更新源
+4、sudo apt-get update
+# 安装2.0
+5、sudo apt-get install nvidia-docker2
+# 重新加载docker守护进程配置
+6、sudo pkill -SIGHUP dockerd
+# 测试
+7、sudo docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+如遇报错，即为cuda版本问题，请使用如下指令。
+sudo nvidia-docker run --rm nvidia/cuda:10.1-devel nvidia-smi
+
+在Ubuntu18.04上安装Docker CE的方法(社区版)
+卸载旧版本
+如果之前安装旧版本，需要先卸载：
+$ sudo apt-get remove docker docker-engine docker.io containerd runc
+设置仓库
+更新apt包索引：
+$ sudo apt-get update
+让apt能通过HTTPS使用仓库:
+$ sudo apt-get install \  apt-transport-https \  ca-certificates \  curl \  software-properties-common
+添加官方的GPG 密钥：
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+验证你的密钥：
+$ sudo apt-key fingerprint 0EBFCD88
+
+设置选用哪个版本。
+$ sudo add-apt-repository \  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \  $(lsb_release -cs) \  test"
+我选用了test版本。
+安装
+更新apt包索引
+$ sudo apt-get update
+开始安装
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+测试
+$ sudo docker run hello-world
+
+二、docker环境加载
+docker镜像加载：
+docker load < rencong.tar  #加载已有镜像
+或docker pull ultralytics/yolov5  #可以在docker hub上下载需要的镜像，也可以上传自己的镜像
+docker images
+docker ps -a
+docker tag 20f31c9acb30 rencong:v1.0
+docker容器创建：
+nvidia-docker run -ti -d --name rencong_yuhangdetect --restart=always -v /raid/rencong:/raid/rencong -v /raid/public_data/:/raid/public_data/:ro -e PASSWORD=yuhang_rencong  -p 1006:6006 -p 1008:8888 -p 1043:8443 -p 1080:8080 -p 1022:22 rencong:v1.0 env LANG=C.UTF-8 /bin/bash
+ sudo docker exec -ti rencong_yuhangdetect env LANG=C.UTF-8 /bin/bash       
+
+nvidia-docker run -ti -d --name rencong_docker --restart=always -v /homehdd4t:/home/hdd4t -e PASSWORD=rencong  -p 1006:6006 -p 1008:8888 -p 1043:8443 -p 1080:8080 -p 1022:22 rencong:v1.0 env LANG=C.UTF-8 /bin/bash
+
+
+工具安装：
+sudo apt-get install tmux
+tmux new -s rencong
+
+二、docker 使用教程
+ https://blog.csdn.net/Willen_/article/details/82859421
+https://mp.weixin.qq.com/s/CZ9sOAqE-D1cq40ZzBETnw
+ 镜像操作：
+搜索镜像：docker search [image_name]
+获取镜像：docker pull ultralytics/yolov5  #可以在docker hub上下载需要的镜像，也可以上传镜像
+查看镜像：docker images
+镜像重命名：docker tag [old_image]:[old_version] [new_image]:[new_version] 
+删除镜像：docker rmi [image_id/image_name:image_version] 
+导出镜像：docker save -o [镜像名称] [镜像]
+导入镜像：docker load < [image.tar_name]     例如：docker load < rencong.tar  #加载已有镜像
+   docker load --input [image.tar_name]
+查看镜像历史：docker history [image_name]
+docker run -ti -d --runtime=nvidia --name rencong_yuhangdetect --restart=always -e PASSWORD=rencong  -v /raid/rencong:/raid/rencong -p 1006:6006 -p 1008:8888 -p 1043:8443 -p 1080:8080 -p 1022:22 andresfr/mlframeworks:latest env LANG=C.UTF-8 /bin/bash
+容器操作：
+查看容器：docker ps -a
+创建新容器并启动：①：nvidia-docker run -ti -d --name rencong_yuhangdetect --restart=always -v /raid/rencong:/raid/rencong -v /raid/public_data/:/raid/public_data -e PASSWORD=rencong  -p 1006:6006 -p 1008:8888 -p 1043:8443 -p 1080:8080 -p 1022:22 rencong:v1.0 env LANG=C.UTF-8 /bin/bash
+手工方式进入容器：docker exec -ti rencong_yuhangdetect env LANG=C.UTF-8 /bin/bash       
+nvidia-docker run -ti -d --name rencong_docker --restart=always -v /homehdd4t:/home/hdd4t -e PASSWORD=rencong  -p 1006:6006 -p 1008:8888 -p 1043:8443 -p 1080:8080 -p 1022:22 rencong:v1.0 env LANG=C.UTF-8 /bin/bash
+docker exec -ti rencong_yuhangdetect env LANG=C.UTF-8 /bin/bash   
+生产方式进入容器：脚本
+docker容器启动命令参数详解：--name 给容器定义一个名称；-i让容器的标准输入保持打开；-t让docker分配一个伪终端，并绑定到容器的标准输入上；/bin/bash执行一个命令
+启动已停止的容器：docker start [container_id]
+关闭容器：docker stop [container_id]
+删除容器：docker rm [container_id]         docker rm -f [container_id] 
+退出容器：Ctrl+D   exit
+基于容器创建镜像：
+方法一：docker commit -m "改动信息" -a "作者信息" [container_id] [new_image:tag]
+方法二：docker export [容器id] > 模板文件名.tar
+查看容器运行日志：docker logs [容器id]
+查看容器详细信息：docker inspect [容器id]
+查看容器端口信息：docker port [容器id]
+LIUNX工具安装：
+sudo apt-get install tmux
+创建新终端：tmux new -s [名称]
+进入终端：tmux a -t [名称]
+
+

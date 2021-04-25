@@ -1,0 +1,33 @@
+# @文件  : Ubuntu18.04安装nvidia显卡驱动.txt
+# @作者  : Michael Cong
+# @日期  : 2020/08/04
+# @邮箱  : rencong_jx@163.com
+
+一、禁用开源核显驱动nouveau
+    sudo apt-get purge nvidia*#卸载显卡驱动
+    ①禁用nouveau，这是ubuntu默认使用的开源显卡驱动，和nvidia驱动一起使用可能导致黑屏，所以禁掉。
+    曾经在这里入坑半个月，网上的教程也可以，我这里有一个更直接的方法，直接删除驱动文件。
+    sudo nautilus  #进入管理员权限，否则删不掉。或者直接用命令删除吧。
+    sudo rm -rf /lib/modules/5.0.0-23-generic/kernel/drivers/gpu/drm/nouveau
+    /lib/modules/5.0.0-23-generic/kernel/drivers/gpu/drm/nouveau
+    在上面这个路径下删除nouveau即可
+   ②禁用nouveau，运行如下命令
+     sudo vim /etc/modprobe.d/blacklist.conf
+     在末尾添加 blacklist nouveau
+     然后执行sudo update-initramfs -u
+
+    PS:
+    $ dpkg -l | grep nvidia
+    # Then I deleted the ones that showed up (mostly libnvidia-* but also xserver-xorg-video-nvidia-xxx`)
+    $ sudo apt-get purge libnvidia* xserver-xorg-video-nvidia-440 
+    $ sudo apt autoremove # clean it up
+
+二、安装NVIDIA显卡驱动
+    安装显卡驱动的方式有很多，这里介绍其中最简单的方法——ppa源安装驱动
+    # 添加驱动源
+    $ sudo add-apt-repository ppa:graphics-drivers/ppa
+    $ sudo apt-get update
+    ubuntu-drivers devices  #检测驱动版本
+    sudo ubuntu-drivers autoinstall1 #自动安装驱动，或者手动 sudo apt-get install nvidia-driver-440
+    sudo reboot -f #重启
+    输入nvidia-smi,检查是否安装成功。

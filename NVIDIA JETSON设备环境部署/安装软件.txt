@@ -1,0 +1,7 @@
+# @文件  : 1TX2更换软件源.txt
+# @作者  : Michael Cong
+# @日期  : 2020/08/08
+# @邮箱  : rencong_jx@163.com
+
+# vlc media player
+sudo apt-get install vlc

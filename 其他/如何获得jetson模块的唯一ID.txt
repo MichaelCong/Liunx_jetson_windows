@@ -1,0 +1,11 @@
+/*****************************************************
+
+L4T-version: R32
+company: Realtimes
+editor: tech-36
+date:2021-1
+
+*****************************************************/
+
+命令行模式下：
+$ sudo cat /sys/firmware/devicetree/base/serial-number

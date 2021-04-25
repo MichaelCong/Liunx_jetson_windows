@@ -1,0 +1,12 @@
+# @文件  : Ubuntu18.04安装ssh服务.txt
+# @作者  : Michael Cong
+# @日期  : 2020/08/04
+# @邮箱  : rencong_jx@163.com
+
+一、默认版本
+    如果对opencv功能没有要求，使用python的话就用下面指令进行安装。
+    sudo apt-get install python-opencv
+
+二、源码编译opencv版本
+    方式一安装的opencv版本不能满足我日常需要，需要编译源码opencv和contri_opencv。
+后期更新。
