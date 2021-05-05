@@ -14,8 +14,8 @@ https://blog.csdn.net/qq_21466543/article/details/80693955
 Labelme安装（Win10）
 
 创建Python下Labelme环境
-##默认已经安装了anaconda
-##创建环境
+默认已经安装了anaconda
+创建环境
 conda create -name=labelme python=3.7 //应该是自己的anaconda Python版本
 conda activate labelme //激活以labelme为名称的labelme环境
 
