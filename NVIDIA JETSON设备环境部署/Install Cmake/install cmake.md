@@ -39,6 +39,6 @@ cmake --version
 ```
 输出  
 ```
-cmake version 3.13.3
+cmake version 3.18.0
 CMake suite maintained and supported by Kitware (kitware.com/cmake).
 ```

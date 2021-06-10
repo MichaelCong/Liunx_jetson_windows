@@ -110,7 +110,7 @@ PyTorch v1.8 - torchvision v0.9.0
 
 cd torchvision  
 export BUILD_VERSION=0.9.0  
-sudo python3 setup.py install --user  
+python3 setup.py install --user  
 cd ../  # attempting to load torchvision from build dir will result in import error  
 可选：  
 pip3 install 'pillow<7' # not needed for torchvision v0.5.0+
@@ -125,4 +125,4 @@ pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple pillow==4.1.1
 
 ## 2.4 安装验证
 通过一下命令进行安装验证。  
-python3 -c "import torch ; print(torch.__version__);print(torchvision.__version__)"
+python3 -c "import torch ;import torchvision; print(torch.__version__);print(torchvision.__version__)"
